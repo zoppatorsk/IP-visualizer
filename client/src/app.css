@@ -1,5 +1,6 @@
 :root {
 	font-size: 16px;
+	--black-bg: #000000d5;
 }
 *,
 *::after,
@@ -10,4 +11,5 @@
 }
 html {
 	background-color: #445766;
+	overflow: hidden;
 }

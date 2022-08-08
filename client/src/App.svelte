@@ -1,9 +1,12 @@
 <script>
 	import { layerSettings } from './lib/stores/';
-	import mapboxgl from 'mapbox-gl/dist/mapbox-gl';
+	import maplibregl from 'maplibre-gl';
 	import { onMount } from 'svelte';
 	import CircleCreator from './lib/CircleCreator.js';
 	import createLayer from './lib/createLayer.js';
+	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
+	import ArrowRight from 'svelte-material-icons/ArrowRight.svelte';
+	import SelectionEllipse from 'svelte-material-icons/Crosshairs.svelte';
 
 	let circleCreator;
 	let ipData = [];
@@ -13,10 +16,15 @@
 	let availableLayers = ['Heatmap', 'Grid', 'Scatterplotter'];
 	let map;
 	let mapLoaded = false; //changes to true when map has loeded, this is to prevent stuff to break on select layer
-	let time; //temp var
-	// let data
-
+	let info;
+	let hideController = false;
 	$: selectedLayer && mapLoaded && changeLayer(); //will run when map is loaded and layer is selected
+
+	document.addEventListener('info', (e) => {
+		// @ts-ignore
+		info = e.detail;
+		console.log(info.object);
+	});
 
 	document.addEventListener('circleCreated', async (e) => {
 		// @ts-ignore
@@ -93,8 +101,8 @@
 
 	//'mapbox://styles/mapbox/satellite-v9'
 	onMount(() => {
-		mapboxgl.accessToken = import.meta.env.VITE_MAPBOXKEY;
-		map = new mapboxgl.Map({
+		//mapboxgl.accessToken = import.meta.env.VITE_MAPBOXKEY;
+		map = new maplibregl.Map({
 			container: 'map',
 			style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json', // style URL
 			center: [14.052833595128646, 58.41176811801333],
@@ -116,57 +124,105 @@
 </script>
 
 <main>
-	<div class="info">
-		No of ip's in selection: {ipData
-			.reduce((prev, curr) => prev + curr.hosts, 0)
-			.toString()
-			.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+	<div class="button-wrapper">
+		<div role="button" disabled={!map || waitingForData || !circleCreator || circleCreator.active} class="outline" on:click={send} aria-busy={waitingForData}>
+			{#if !waitingForData}<SelectionEllipse /> {/if}
+		</div>
 	</div>
-	<div class="button-wrapper"><button disabled={!map || waitingForData || !circleCreator || circleCreator.active} class="outline" on:click={send} aria-busy={waitingForData}>Send</button></div>
-	<div class="controller" class:disableClick={waitingForData}>
-		<div class="">
-			<label for="layertype">Layertype</label>
+	<div class="controller" class:hide-controller={hideController}>
+		<div class="tab" on:click={() => (hideController = !hideController)}>
+			{#if hideController}<ArrowLeft />{:else}<ArrowRight />{/if}
+		</div>
+		<div class="layer-controll" class:disableClick={waitingForData}>
+			<label for="layertype">Layer type</label>
 			<select name="layertype" id="layertype" bind:value={selectedLayer}>
 				{#each availableLayers as value}<option {value}>{value}</option>{/each}
 			</select>
-		</div>
-		<div class="layerControl">
-			{#if selectedLayer === 'Heatmap'}
-				<label for="radiusPixels">radius pixels {$layerSettings[selectedLayer].radiusPixels}</label>
-				<input type="range" name="radiusPixels" min="0" max="100" bind:value={$layerSettings[selectedLayer].radiusPixels} on:change={() => layer.setProps({ radiusPixels: $layerSettings[selectedLayer].radiusPixels })} />
-				<label for="intensity">Intensity {$layerSettings[selectedLayer].intensity}</label>
-				<input type="range" name="intensity" min="0" max="100" bind:value={$layerSettings[selectedLayer].intensity} on:change={() => layer.setProps({ intensity: $layerSettings[selectedLayer].intensity })} />
-			{/if}
-			{#if selectedLayer === 'Grid'}
-				<label for="cellSize">Cell Size {$layerSettings[selectedLayer].cellSize}</label>
-				<input type="range" name="cellSize" min="0" max="5000" bind:value={$layerSettings[selectedLayer].cellSize} on:change={() => layer.setProps({ cellSize: $layerSettings[selectedLayer].cellSize })} />
-				<label for="elevationScale">Elevation Scale {$layerSettings[selectedLayer].elevationScale}</label>
-				<input type="range" name="elevationScale" min="0" max="100" bind:value={$layerSettings[selectedLayer].elevationScale} on:change={() => layer.setProps({ elevationScale: $layerSettings[selectedLayer].elevationScale })} />
-			{/if}
-			{#if selectedLayer === 'Scatterplotter'}
-				<label for="radiusScale">Radius Scale {$layerSettings[selectedLayer].radiusScale}</label>
-				<input type="range" name="radiusScale" min="0" max="5" bind:value={$layerSettings[selectedLayer].radiusScale} on:change={() => layer.setProps({ radiusScale: $layerSettings[selectedLayer].radiusScale })} />
-				<label for="lineWidthMinPixels">Min Pixel Width {$layerSettings[selectedLayer].lineWidthMinPixels}</label>
-				<input type="range" name="lineWidthMinPixels" min="1" max="1" bind:value={$layerSettings[selectedLayer].lineWidthMinPixels} on:change={() => layer.setProps({ lineWidthMinPixels: $layerSettings[selectedLayer].lineWidthMinPixels })} />
-			{/if}
+
+			<div class="layerControl">
+				{#if selectedLayer === 'Heatmap'}
+					<label for="radiusPixels">radius pixels {$layerSettings[selectedLayer].radiusPixels}</label>
+					<input type="range" name="radiusPixels" min="0" max="100" bind:value={$layerSettings[selectedLayer].radiusPixels} on:change={() => layer.setProps({ radiusPixels: $layerSettings[selectedLayer].radiusPixels })} />
+					<label for="intensity">Intensity {$layerSettings[selectedLayer].intensity}</label>
+					<input type="range" name="intensity" min="1" max="100" bind:value={$layerSettings[selectedLayer].intensity} on:change={() => layer.setProps({ intensity: $layerSettings[selectedLayer].intensity })} />
+				{/if}
+				{#if selectedLayer === 'Grid'}
+					<label for="cellSize">Cell Size {$layerSettings[selectedLayer].cellSize}</label>
+					<input type="range" name="cellSize" min="0" max="5000" bind:value={$layerSettings[selectedLayer].cellSize} on:change={() => layer.setProps({ cellSize: $layerSettings[selectedLayer].cellSize })} />
+					<label for="elevationScale">Elevation Scale {$layerSettings[selectedLayer].elevationScale}</label>
+					<input type="range" name="elevationScale" min="1" max="100" bind:value={$layerSettings[selectedLayer].elevationScale} on:change={() => layer.setProps({ elevationScale: $layerSettings[selectedLayer].elevationScale })} />
+				{/if}
+				{#if selectedLayer === 'Scatterplotter'}
+					<label for="radiusScale">Radius Scale {$layerSettings[selectedLayer].radiusScale}</label>
+					<input type="range" name="radiusScale" min="1" max="20" bind:value={$layerSettings[selectedLayer].radiusScale} on:change={() => layer.setProps({ radiusScale: $layerSettings[selectedLayer].radiusScale })} />
+					<label for="lineWidthMinPixels">Min Pixel Width {$layerSettings[selectedLayer].lineWidthMinPixels}</label>
+					<input type="range" name="lineWidthMinPixels" min="1" max="5" bind:value={$layerSettings[selectedLayer].lineWidthMinPixels} on:change={() => layer.setProps({ lineWidthMinPixels: $layerSettings[selectedLayer].lineWidthMinPixels })} />
+				{/if}
+			</div>
+			<div>
+				IP's in selection: {ipData
+					.reduce((prev, curr) => prev + curr.hosts, 0)
+					.toString()
+					.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+			</div>
+			<div>
+				Last hovered<br />CIDR: {info ? info.CIDR : 'none'}<br />
+				Ip's: {info ? info.hosts : 'none'}<br />
+			</div>
 		</div>
 	</div>
 	<div id="map" />
 </main>
 
 <style>
-	.info {
-		padding: 10px;
-		height: 44px;
-		color: #cdd1d1ec;
-		background-color: #090a0ae1;
+	.controller {
+		position: absolute;
+		top: 10px;
+		right: 0px;
+
+		z-index: 2;
+		pointer-events: none;
+		transition: right 0.5s ease-in-out;
 	}
+	.hide-controller {
+		right: -280px;
+	}
+	.tab {
+		/* box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4); */
+		cursor: pointer;
+		pointer-events: all;
+		float: left;
+		background-color: var(--primary);
+		width: 30px;
+		height: 30px;
+		border-top-left-radius: 8px;
+		border-bottom-left-radius: 8px;
+		display: flex;
+		font-size: 22px;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		color: white;
+	}
+	.layer-controll {
+		/* box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4); */
+		pointer-events: all;
+		float: right;
+		display: block;
+		width: 280px;
+		height: auto;
+		background-color: var(--black-bg);
+
+		padding: 20px;
+		border: 1px var(--primary) solid;
+	}
+
 	.disableClick {
 		pointer-events: none;
 	}
 	.button-wrapper {
 		position: absolute;
-		bottom: 20px;
+		bottom: 30px;
 		left: 0;
 		width: 100%;
 		display: flex;
@@ -174,8 +230,12 @@
 		align-items: center;
 		z-index: 999;
 	}
-	.button-wrapper button {
-		width: 200px;
+	.button-wrapper div {
+		font-size: 40px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: var(--black-bg);
 		/* background-color: #6495ed;
 		color: #fff;
 		padding: 20px;
@@ -188,20 +248,7 @@
 		top: 0;
 		bottom: 0;
 		width: 100%;
-		z-index: -1;
-	}
-
-	.controller {
-		position: absolute;
-		top: 44px;
-		right: 0;
-		width: 300px;
-		height: 300px;
-		background-color: #090a0ae1;
-		z-index: 999;
-		padding: 20px;
-		border: 1px var(--primary) solid;
-		box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+		z-index: 0;
 	}
 
 	/* h1 {

@@ -1,5 +1,5 @@
 import './app.css';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import App from './App.svelte';
 
 const app = new App({

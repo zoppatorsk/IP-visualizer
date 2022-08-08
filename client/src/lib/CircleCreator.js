@@ -1,10 +1,10 @@
-import { Point as MapBoxPoint } from 'mapbox-gl';
+import Point from '@mapbox/point-geometry';
 import distance from '@turf/distance';
-import { point } from '@turf/helpers';
+import { point as turfPoint } from '@turf/helpers';
 import circle from '@turf/circle';
 
 export default class CircleCreator {
-	constructor(map, pointClass) {
+	constructor(map) {
 		this.map = map;
 		this.radius = 0;
 		this.center = null; //hold coordinates of center of circle
@@ -31,13 +31,13 @@ export default class CircleCreator {
 			this.centerPos = null;
 			this.endPos = null;
 			this.circleElement = null;
-			this.canvas.addEventListener('mousedown', this.MouseDownListener);
+			this.canvas.addEventListener('pointerdown', this.MouseDownListener);
 			this.acitve = true;
 		}
 	}
 	mousePos(e) {
 		let rect = this.canvas.getBoundingClientRect();
-		return new MapBoxPoint(e.clientX - rect.left - this.canvas.clientLeft, e.clientY - rect.top - this.canvas.clientTop);
+		return new Point(e.clientX - rect.left - this.canvas.clientLeft, e.clientY - rect.top - this.canvas.clientTop);
 	}
 
 	mouseDown(e) {
@@ -46,8 +46,8 @@ export default class CircleCreator {
 		this.map.dragPan.disable();
 		this.centerPos = this.mousePos(e);
 
-		this.canvas.addEventListener('mousemove', this.MouseMoveListener);
-		this.canvas.addEventListener('mouseup', this.MouseUpListener);
+		this.canvas.addEventListener('pointermove', this.MouseMoveListener);
+		this.canvas.addEventListener('pointerup', this.MouseUpListener);
 		document.addEventListener('keydown', this.KeyDownListener);
 	}
 
@@ -67,8 +67,8 @@ export default class CircleCreator {
 			this.circleElement.style.cssText = 'background: rgba(56, 135, 190, 0.1);border: 2px solid #3887be;position: absolute;top: 0;left: 0;z-index: 999;border-radius: 50%; display:flex;align-items:center;justify-content:center;color:white;font-size:13px;text-align:center;';
 			this.canvas.appendChild(this.circleElement);
 		}
-		this.center = point([this.map.unproject(this.centerPos).lng, this.map.unproject(this.centerPos).lat]);
-		let endPoint = point([this.map.unproject(this.endPos).lng, this.map.unproject(this.endPos).lat]);
+		this.center = turfPoint([this.map.unproject(this.centerPos).lng, this.map.unproject(this.centerPos).lat]);
+		let endPoint = turfPoint([this.map.unproject(this.endPos).lng, this.map.unproject(this.endPos).lat]);
 		const currentRadius = distance(this.center, endPoint);
 
 		//do some math n position the element in the corrrect place if radius is below threshold
@@ -88,8 +88,8 @@ export default class CircleCreator {
 			this.circleElement.style.top = this.centerPos.y + 'px';
 			this.circleElement.style.left = this.centerPos.x + 'px';
 		}
-		// this.center = point([this.map.unproject(this.centerPos).lng, this.map.unproject(this.centerPos).lat]);
-		// let endPoint = point([this.map.unproject(this.endPos).lng, this.map.unproject(this.endPos).lat]);
+		// this.center = turfPoin([this.map.unproject(this.centerPos).lng, this.map.unproject(this.centerPos).lat]);
+		// let endPoint = turfPoin([this.map.unproject(this.endPos).lng, this.map.unproject(this.endPos).lat]);
 		// this.radius = distance(this.center, endPoint);
 	}
 	onMouseUp(e) {
@@ -97,15 +97,15 @@ export default class CircleCreator {
 		this.finish();
 	}
 	finish() {
-		this.canvas.removeEventListener('mousemove', this.MouseMoveListener);
-		this.canvas.removeEventListener('mouseup', this.MouseUpListener);
+		this.canvas.removeEventListener('pointermove', this.MouseMoveListener);
+		this.canvas.removeEventListener('pointerup', this.MouseUpListener);
 		document.removeEventListener('keydown', this.KeyDownListener);
-		this.canvas.removeEventListener('mousedown', this.MouseDownListener);
+		this.canvas.removeEventListener('pointerdown', this.MouseDownListener);
 
 		if (!this.escape && this.centerPos && this.radius) {
 			this.renderCircle(circle(this.center, this.radius));
 			//dispatch the event with the needed stuff
-			document.dispatchEvent(new CustomEvent('circleCreated', { bubbles: true, detail: { radius: this.radius, center: this.center } }));
+			document.dispatchEvent(new CustomEvent('circleCreated', { detail: { radius: this.radius, center: this.center } }));
 			console.log('circleCreated');
 		}
 
