@@ -9,7 +9,7 @@ const expressErrorHandler = require('./middleware/expressErrorHandler'); //middl
 const app = express();
 
 app.set('query parser', false); //No query parser needed
-if (process.env.USE_PROXY) app.set('trust proxy', true); //if USE_PROXY is set, then trust proxy headers
+if (process.env.USE_PROXY || process.env.MODE == 'prod') app.set('trust proxy', true); //if USE_PROXY is set, then trust proxy headers
 
 //Routes for the endpoints...
 const data = require('./routes/data');
@@ -17,7 +17,7 @@ const data = require('./routes/data');
 //Middleware that's always used -- gets in between the request and response (request -> middleware -> route handler -> response)
 app.use(helmet()); //Setting some headers, helps prevent attacks by not announce system is running on node and such.
 app.use(compression()); //use compression to compress responses
-if (process.env.NEED_CORS) app.use(cors()); //add cors to allow cross-origin requests ---(dev check later)
+if (process.env.NEED_CORS && process.env.MODE !== 'prod') app.use(cors()); //add cors to allow cross-origin requests
 app.use(express.json()); //for parsing req.body into a json object
 
 app.use(cors()); //add cors to allow cross-origin requests
@@ -28,5 +28,6 @@ app.use(express.static(path.join(__dirname, 'public'))); //serve static files fr
 
 app.use(expressErrorHandler); //Error handler middleware. Always shld be last cuz errors boubble up.
 
-const port = process.env.API_PORT;
-app.listen(port, () => console.log(`listening on port ${port}`));
+const port = process.env.MODE == 'dev' ? process.env.PROD_API_PORT : process.env.API_PORT;
+if (process.env.MODE == 'dev') app.listen(port, 'localhost', () => console.log(`localhost listening on port ${port}`));
+else app.listen(port, () => console.log(`listening on port ${port}`));
