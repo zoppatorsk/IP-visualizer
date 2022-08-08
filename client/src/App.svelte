@@ -23,7 +23,7 @@
 	document.addEventListener('info', (e) => {
 		// @ts-ignore
 		info = e.detail;
-		console.log(info.object);
+		console.log(info);
 	});
 
 	document.addEventListener('circleCreated', async (e) => {
@@ -165,10 +165,22 @@
 					.toString()
 					.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
 			</div>
-			<div>
-				Last hovered<br />CIDR: {info ? info.CIDR : 'none'}<br />
-				Ip's: {info ? info.hosts : 'none'}<br />
-			</div>
+			{#if selectedLayer == 'Scatterplotter'}
+				<div>
+					Last Picked<br />CIDR: {info ? info.CIDR : 'none'}<br />
+					Ip's: {info ? info.hosts : 'none'}<br />
+				</div>
+			{:else if selectedLayer == 'Grid'}
+				<div>
+					Total Ip's clicked grid item:<br />
+					{info
+						? info
+								.reduce((prev, curr) => prev + curr.source.hosts, 0)
+								.toString()
+								.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+						: 'none'}<br />
+				</div>
+			{/if}
 		</div>
 	</div>
 	<div id="map" />

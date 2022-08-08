@@ -38,10 +38,9 @@ export default function createLayer(selectedLayer, ipData) {
 				elevationScale: get(layerSettings)[selectedLayer].elevationScale,
 				elevationRange: get(layerSettings)[selectedLayer].elevationRange,
 				getPosition: (d) => d.coordinates,
-				getElevationVeight: (d) => d.hosts * 10,
-				getColorWeight: (d) => ipData.filter((ip) => ip.coordinates[0] === d.coordinates[0] && ip.coordinates[1] === d.coordinates[1]).reduce((acc, cur) => acc + cur.hosts, 0),
+				getElevationWeight: (d) => d.hosts,
 				pickable: true,
-
+				onClick: (info) => info.object && document.dispatchEvent(new CustomEvent('info', { detail: info.object.points })),
 				// 	[0, 'rgba(0, 0, 255, 0.2)'],
 				// 	[1, 'rgba(0, 0, 255, 0.2)'],
 				// ],
@@ -64,14 +63,7 @@ export default function createLayer(selectedLayer, ipData) {
 				// getFillColor: (d) => [1, 'rgba(0, 0, 255, 0.2)'],
 				getFillColor: (d) => colorByHosts(d.hosts),
 				pickable: true,
-				onHover: (info) => info.object && document.dispatchEvent(new CustomEvent('info', { bubbles: true, detail: info.object })),
-				// onHover: (info) => info && document.dispatchEvent(new CustomEvent('info', { bubbles: true, detail: { data: info.object, x: info.x, y: info.y } })),
-
-				// onClick: (info) => console.log(info.object),
-
-				// 	[0, 'rgba(0, 0, 255, 0.2)'],
-				// 	,
-				// ],
+				onHover: (info) => info.object && document.dispatchEvent(new CustomEvent('info', { detail: info.object })),
 			});
 			break;
 
