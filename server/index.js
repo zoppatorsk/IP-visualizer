@@ -28,6 +28,6 @@ app.use(express.static(path.join(__dirname, 'public'))); //serve static files fr
 
 app.use(expressErrorHandler); //Error handler middleware. Always shld be last cuz errors boubble up.
 
-const port = process.env.MODE == 'dev' ? process.env.PROD_API_PORT : process.env.API_PORT;
-if (process.env.MODE == 'dev') app.listen(port, 'localhost', () => console.log(`localhost listening on port ${port}`));
+const port = process.env.MODE == 'prod' ? process.env.PROD_API_PORT : process.env.API_PORT;
+if (process.env.MODE == 'prod') app.listen(port, 'localhost', () => console.log(`localhost listening on port ${port}`));
 else app.listen(port, () => console.log(`listening on port ${port}`));
