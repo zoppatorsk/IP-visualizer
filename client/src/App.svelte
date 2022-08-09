@@ -176,7 +176,7 @@
 	</div>
 	<div id="map" />
 	<div class="made" class:made-visible={madeVisible} on:click={() => (madeVisible = !madeVisible)}>
-		&lt; Made with ☕ and <img src="./public/svelte.svg" alt="svelte logo" /> &gt;
+		&lt; Made with ☕ and <img src="./svelte.svg" alt="svelte logo" /> &gt;
 	</div>
 </main>
 

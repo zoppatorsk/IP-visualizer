@@ -15,7 +15,7 @@ if (process.env.USE_PROXY == 'true' || process.env.MODE == 'prod') app.set('trus
 const data = require('./routes/data');
 
 //Middleware that's always used -- gets in between the request and response (request -> middleware -> route handler -> response)
-app.use(helmet()); //Setting some headers, helps prevent attacks by not announce system is running on node and such.
+app.use(helmet({ contentSecurityPolicy: false })); //Setting some security headers but disable the CSP junk..
 app.use(compression()); //use compression to compress responses
 if (process.env.NEED_CORS == 'true' && process.env.MODE !== 'prod') app.use(cors()); //add cors to allow cross-origin requests
 
