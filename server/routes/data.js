@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
 	const { lat, lng, radius } = req.body;
 	const data = await redisClient.sendCommand(['GEORADIUS', 'ips', lng + '', lat + '', radius + '', 'km', 'WITHCOORD']);
 	const compiled = processData(data);
-	return res.status(201).send(compiled);
+	return res.status(200).send(compiled);
 }); //end router.post
 
 module.exports = router;

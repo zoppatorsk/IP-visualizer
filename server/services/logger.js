@@ -5,12 +5,14 @@ const fs = require('fs');
 process
 	.on('unhandledRejection', (reason, p) => {
 		console.error(reason, 'Unhandled promise rejection ', p);
-		logError(reason); //just log the promise rejections
+		//cant figure out how to log the promise rejection properly so just logging the reason
+		logError(reason);
+		process.exit(1); //just kill on rejection.. shouldnt be a problem
 	})
 	.on('uncaughtException', (err) => {
 		console.error('Uncaught Exception', err);
-		logError(err);
-		process.exit(1); //Something is probably really broken so kill the whole app
+		logError(err.stack ? err.stack : err);
+		process.exit(1);
 	});
 
 function logError(content) {
@@ -22,3 +24,4 @@ function logError(content) {
 	}
 }
 module.exports = logError;
+//

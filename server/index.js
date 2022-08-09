@@ -9,7 +9,7 @@ const expressErrorHandler = require('./middleware/expressErrorHandler'); //middl
 const app = express();
 
 app.set('query parser', false); //No query parser needed
-if (process.env.USE_PROXY || process.env.MODE == 'prod') app.set('trust proxy', true); //if USE_PROXY is set, then trust proxy headers
+if (process.env.USE_PROXY == 'true' || process.env.MODE == 'prod') app.set('trust proxy', true); //if USE_PROXY is set, then trust proxy headers
 
 //Routes for the endpoints...
 const data = require('./routes/data');
@@ -17,10 +17,9 @@ const data = require('./routes/data');
 //Middleware that's always used -- gets in between the request and response (request -> middleware -> route handler -> response)
 app.use(helmet()); //Setting some headers, helps prevent attacks by not announce system is running on node and such.
 app.use(compression()); //use compression to compress responses
-if (process.env.NEED_CORS && process.env.MODE !== 'prod') app.use(cors()); //add cors to allow cross-origin requests
-app.use(express.json()); //for parsing req.body into a json object
+if (process.env.NEED_CORS == 'true' && process.env.MODE !== 'prod') app.use(cors()); //add cors to allow cross-origin requests
 
-app.use(cors()); //add cors to allow cross-origin requests
+app.use(express.json()); //for parsing req.body into a json object
 
 //register the routes
 app.use('/api/data', data); //when starts with /api/data then use the "data" route that is required from routes/user folder

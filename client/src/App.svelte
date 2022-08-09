@@ -7,6 +7,7 @@
 	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 	import ArrowRight from 'svelte-material-icons/ArrowRight.svelte';
 	import SelectionEllipse from 'svelte-material-icons/Crosshairs.svelte';
+	import fetchData from './lib/fetchData';
 
 	let circleCreator;
 	let ipData = [];
@@ -34,29 +35,9 @@
 			radius = parseInt(radius);
 			waitingForData = true;
 			const postData = { radius, lng: center.geometry.coordinates[0], lat: center.geometry.coordinates[1] };
-
-			try {
-				const result = await fetch(import.meta.env.VITE_API_URL, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(postData),
-				});
-
-				if (!result.ok) {
-					console.log(result.status); //check stuff later n decide what to do when error happens
-					throw new Error(`Error! status: ${result.status}`); //throw it n handle in catch block
-				}
-
-				ipData = await result.json();
-				updateLayer();
-			} catch (error) {
-				console.log('catched in catch block');
-				console.log(error);
-			} finally {
-				waitingForData = false;
-			}
+			ipData = await fetchData(postData);
+			updateLayer();
+			waitingForData = false;
 		}
 	});
 

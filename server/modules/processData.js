@@ -4,9 +4,6 @@ module.exports = function processData(data) {
 	}
 
 	let compiled = [];
-	if (!data) return compiled; //returns if data is undefined
-
-	console.time('processData');
 	for (let i = 0; i < data.length; i++) {
 		const item = data[i];
 		compiled.push({
@@ -15,6 +12,5 @@ module.exports = function processData(data) {
 			coordinates: [parseFloat(item[1][0]), parseFloat(item[1][1])],
 		});
 	}
-	console.timeEnd('processData');
 	return compiled;
 };
