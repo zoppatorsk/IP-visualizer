@@ -187,10 +187,10 @@
 		left: 40px;
 		z-index: 1;
 		pointer-events: none;
-		background: var(--primary); /* fallback for old browsers */
+		background: var(--primary);
 
-		background: -webkit-linear-gradient(to right, var(--primary), #00f260); /* Chrome 10-25, Safari 5.1-6 */
-		background: linear-gradient(to right, var(--primary), #00f260); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+		background: -webkit-linear-gradient(to right, var(--primary), #00f260);
+		background: linear-gradient(to right, var(--primary), #00f260);
 
 		background-clip: text;
 		color: transparent;
@@ -236,7 +236,6 @@
 		font-weight: bold;
 	}
 	.tab {
-		/* box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4); */
 		cursor: pointer;
 		pointer-events: all;
 		float: left;
@@ -253,7 +252,6 @@
 		color: white;
 	}
 	.layer-controll {
-		/* box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4); */
 		pointer-events: all;
 		float: right;
 		display: block;
@@ -284,12 +282,6 @@
 		justify-content: center;
 		align-items: center;
 		background-color: var(--black-bg);
-		/* background-color: #6495ed;
-		color: #fff;
-		padding: 20px;
-		border-radius: 5px;
-		border: none;
-		cursor: pointer; */
 	}
 	#map {
 		position: absolute;
