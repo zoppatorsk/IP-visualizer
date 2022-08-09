@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const processData = require('../modules/processData');
 const validate = require('../services/validate');
-const redisClient = require('../services/redis');
+const rateLimiter = require('../middleware/rateLimiter');
 
-//Endpoint for creating a user
-router.post('/', async (req, res) => {
+router.post('/', rateLimiter, async (req, res) => {
 	// Validate the input
 	const validationError = await validate.data(req.body);
 	if (validationError) return res.status(400).send(validationError);

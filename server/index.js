@@ -7,6 +7,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const expressErrorHandler = require('./middleware/expressErrorHandler'); //middleware that cathes express errors
 const app = express();
+// const redisClient = require('./services/redis');
 
 app.set('query parser', false); //No query parser needed
 if (process.env.USE_PROXY == 'true' || process.env.MODE == 'prod') app.set('trust proxy', true); //if USE_PROXY is set, then trust proxy headers
@@ -28,5 +29,13 @@ app.use(express.static(path.join(__dirname, 'public'))); //serve static files fr
 app.use(expressErrorHandler); //Error handler middleware. Always shld be last cuz errors boubble up.
 
 const port = process.env.MODE == 'prod' ? process.env.PROD_API_PORT : process.env.API_PORT;
+// redisClient
+// 	.connect()
+// 	.then(() => {
+// 		if (process.env.MODE == 'prod') app.listen(port, 'localhost', () => console.log(`localhost listening on port ${port}`));
+// 		else app.listen(port, () => console.log(`listening on port ${port}`));
+// 	})
+// 	.catch((err) => console.log(err)); //connect to redis and start the server
+
 if (process.env.MODE == 'prod') app.listen(port, 'localhost', () => console.log(`localhost listening on port ${port}`));
 else app.listen(port, () => console.log(`listening on port ${port}`));
