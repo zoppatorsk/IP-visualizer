@@ -14,11 +14,12 @@
 	let waitingForData = false;
 	let layer;
 	let selectedLayer;
-	let availableLayers = ['Heatmap', 'Grid', 'Scatterplotter'];
+	let availableLayers = ['Heatmap', 'Hexagon', 'Scatterplotter', 'Grid'];
 	let map;
 	let mapLoaded = false; //changes to true when map has loeded, this is to prevent stuff to break on select layer
 	let info;
 	let hideController = false;
+	let madeVisible = false;
 	$: selectedLayer && mapLoaded && changeLayer(); //will run when map is loaded and layer is selected
 
 	document.addEventListener('info', (e) => {
@@ -105,6 +106,7 @@
 </script>
 
 <main>
+	<h1>IP Visualizer</h1>
 	<div class="button-wrapper">
 		<div role="button" disabled={!map || waitingForData || !circleCreator || circleCreator.active} class="outline" on:click={send} aria-busy={waitingForData}>
 			{#if !waitingForData}<SelectionEllipse /> {/if}
@@ -126,48 +128,95 @@
 					<input type="range" name="radiusPixels" min="0" max="100" bind:value={$layerSettings[selectedLayer].radiusPixels} on:change={() => layer.setProps({ radiusPixels: $layerSettings[selectedLayer].radiusPixels })} />
 					<label for="intensity">Intensity {$layerSettings[selectedLayer].intensity}</label>
 					<input type="range" name="intensity" min="1" max="100" bind:value={$layerSettings[selectedLayer].intensity} on:change={() => layer.setProps({ intensity: $layerSettings[selectedLayer].intensity })} />
-				{/if}
-				{#if selectedLayer === 'Grid'}
+				{:else if selectedLayer === 'Grid'}
 					<label for="cellSize">Cell Size {$layerSettings[selectedLayer].cellSize}</label>
 					<input type="range" name="cellSize" min="0" max="5000" bind:value={$layerSettings[selectedLayer].cellSize} on:change={() => layer.setProps({ cellSize: $layerSettings[selectedLayer].cellSize })} />
 					<label for="elevationScale">Elevation Scale {$layerSettings[selectedLayer].elevationScale}</label>
 					<input type="range" name="elevationScale" min="1" max="100" bind:value={$layerSettings[selectedLayer].elevationScale} on:change={() => layer.setProps({ elevationScale: $layerSettings[selectedLayer].elevationScale })} />
-				{/if}
-				{#if selectedLayer === 'Scatterplotter'}
+				{:else if selectedLayer === 'Scatterplotter'}
 					<label for="radiusScale">Radius Scale {$layerSettings[selectedLayer].radiusScale}</label>
 					<input type="range" name="radiusScale" min="1" max="20" bind:value={$layerSettings[selectedLayer].radiusScale} on:change={() => layer.setProps({ radiusScale: $layerSettings[selectedLayer].radiusScale })} />
 					<label for="lineWidthMinPixels">Min Pixel Width {$layerSettings[selectedLayer].lineWidthMinPixels}</label>
 					<input type="range" name="lineWidthMinPixels" min="1" max="5" bind:value={$layerSettings[selectedLayer].lineWidthMinPixels} on:change={() => layer.setProps({ lineWidthMinPixels: $layerSettings[selectedLayer].lineWidthMinPixels })} />
+				{:else if selectedLayer === 'Hexagon'}
+					<label for="radius">Radius{$layerSettings[selectedLayer].radius}</label>
+					<input type="range" name="radiusScale" min="100" max="10000" step="100" bind:value={$layerSettings[selectedLayer].radius} on:change={() => layer.setProps({ radius: $layerSettings[selectedLayer].radius })} />
+					<label for="coverage">Coverage {$layerSettings[selectedLayer].coverage}</label>
+					<input type="range" name="coverage" min="0.1" max="1" step="0.1" bind:value={$layerSettings[selectedLayer].coverage} on:change={() => layer.setProps({ coverage: $layerSettings[selectedLayer].coverage })} />
+					<label for="upperPrecentile">Upper Percentile {$layerSettings[selectedLayer].upperPercentile}</label>
+					<input type="range" name="upperPrecentile" min="90" max="100" step="1" bind:value={$layerSettings[selectedLayer].upperPercentile} on:change={() => layer.setProps({ upperPercentile: $layerSettings[selectedLayer].upperPercentile })} />
 				{/if}
 			</div>
-			<div>
-				IP's in selection: {ipData
-					.reduce((prev, curr) => prev + curr.hosts, 0)
-					.toString()
-					.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+			<div class="ip-selection">
+				IP's in selection: <span class="bold"
+					>{ipData
+						.reduce((prev, curr) => prev + curr.hosts, 0)
+						.toString()
+						.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+				</span>
 			</div>
 			{#if selectedLayer == 'Scatterplotter'}
 				<div>
-					Last Picked<br />CIDR: {info ? info.CIDR : 'none'}<br />
-					Ip's: {info ? info.hosts : 'none'}<br />
+					Last Hovered<br />CIDR: <span class="bold">{info ? info.CIDR : 'none'}</span><br />
+					IP's: <span class="bold">{info ? info.hosts : 'none'}</span>
 				</div>
-			{:else if selectedLayer == 'Grid'}
+			{:else if selectedLayer == 'Grid' || selectedLayer == 'Hexagon'}
 				<div>
-					Total Ip's clicked grid item:<br />
-					{info
-						? info
-								.reduce((prev, curr) => prev + curr.source.hosts, 0)
-								.toString()
-								.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-						: 'none'}<br />
+					Total IP's clicked item:<br /><span class="bold">
+						{info
+							? info
+									.reduce((prev, curr) => prev + curr.source.hosts, 0)
+									.toString()
+									.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+							: 'none'}</span
+					>
 				</div>
 			{/if}
 		</div>
 	</div>
 	<div id="map" />
+	<div class="made" class:made-visible={madeVisible} on:click={() => (madeVisible = !madeVisible)}>
+		&lt; Made with ☕ and <img src="./public/svelte.svg" alt="svelte logo" /> &gt;
+	</div>
 </main>
 
 <style>
+	h1 {
+		position: absolute;
+		top: 10px;
+		left: 40px;
+		z-index: 1;
+		pointer-events: none;
+		background: var(--primary); /* fallback for old browsers */
+
+		background: -webkit-linear-gradient(to right, var(--primary), #00f260); /* Chrome 10-25, Safari 5.1-6 */
+		background: linear-gradient(to right, var(--primary), #00f260); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+		background-clip: text;
+		color: transparent;
+		font-size: 4em;
+		opacity: 0.9;
+	}
+
+	.made {
+		position: absolute;
+		bottom: 5px;
+		left: -174px;
+		z-index: 1;
+		user-select: none;
+		color: whitesmoke;
+		font-size: 1rem;
+		font-weight: 600;
+		transition: left 0.8s ease-in-out;
+	}
+
+	.made img {
+		height: 1.2rem;
+		width: auto;
+	}
+	.made-visible {
+		left: 20px;
+	}
 	.controller {
 		position: absolute;
 		top: 10px;
@@ -179,6 +228,12 @@
 	}
 	.hide-controller {
 		right: -280px;
+	}
+	.ip-selection {
+		margin-bottom: 10px;
+	}
+	.bold {
+		font-weight: bold;
 	}
 	.tab {
 		/* box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4); */
@@ -205,7 +260,7 @@
 		width: 280px;
 		height: auto;
 		background-color: var(--black-bg);
-
+		user-select: none;
 		padding: 20px;
 		border: 1px var(--primary) solid;
 	}
@@ -244,10 +299,9 @@
 		z-index: 0;
 	}
 
-	/* h1 {
-		position: absolute;
-		font-size: 4rem;
-		text-align: center;
-		z-index: 99;
-	} */
+	@media only screen and (max-width: 450px) {
+		h1 {
+			font-size: 3em;
+		}
+	}
 </style>

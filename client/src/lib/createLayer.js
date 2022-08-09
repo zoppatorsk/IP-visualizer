@@ -1,5 +1,5 @@
 import { MapboxLayer } from '@deck.gl/mapbox';
-import { GridLayer, HeatmapLayer } from '@deck.gl/aggregation-layers';
+import { GridLayer, HeatmapLayer, HexagonLayer } from '@deck.gl/aggregation-layers';
 import { ScatterplotLayer } from '@deck.gl/layers';
 import { get } from 'svelte/store';
 import { layerSettings } from './stores/';
@@ -19,11 +19,6 @@ export default function createLayer(selectedLayer, ipData) {
 				intensity: get(layerSettings)[selectedLayer].intensity,
 				radiusMinPixels: 1,
 				radiusMaxPixels: 100,
-
-				// colorRange: [
-				// 	[0, 'rgba(0, 0, 255, 0.2)'],
-				// 	[1, 'rgba(0, 0, 255, 0.2)'],
-				// ],
 			});
 			break;
 
@@ -64,6 +59,22 @@ export default function createLayer(selectedLayer, ipData) {
 				getFillColor: (d) => colorByHosts(d.hosts),
 				pickable: true,
 				onHover: (info) => info.object && document.dispatchEvent(new CustomEvent('info', { detail: info.object })),
+			});
+			break;
+
+		case 'Hexagon':
+			layer = new MapboxLayer({
+				type: HexagonLayer,
+				id: selectedLayer,
+				data: ipData,
+				pickable: true,
+				extruded: true,
+				getElevationWeight: (d) => d.hosts,
+				elevationRange: [0, 10000],
+				elevationScale: 250,
+				upperPercentile: 100,
+				getPosition: (d) => d.coordinates,
+				onClick: (info) => info.object && document.dispatchEvent(new CustomEvent('info', { detail: info.object.points })),
 			});
 			break;
 

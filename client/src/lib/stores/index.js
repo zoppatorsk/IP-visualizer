@@ -16,6 +16,11 @@ const setttings = {
 		radiusScale: 1,
 		lineWidthMinPixels: 1,
 	},
+	Hexagon: {
+		radius: 1000,
+		coverage: 1,
+		upperPercentile: 100,
+	},
 };
 
 export const layerSettings = writable(setttings);
