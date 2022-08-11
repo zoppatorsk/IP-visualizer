@@ -99,8 +99,8 @@
 			// });
 		}).addControl(
 			new maplibregl.AttributionControl({
-				customAttribution: 'This product includes GeoLite2 data created by MaxMind, available from<br><a href="https://www.maxmind.com">https://www.maxmind.com</a>.',
-				compact: false,
+				customAttribution: 'This product includes GeoLite2 data created by <a href="https://www.maxmind.com">MaxMind</a>',
+				compact: true,
 			})
 		);
 
@@ -240,7 +240,7 @@
 		top: 0;
 		bottom: 0;
 		left: 0;
-		right: 0;
+
 		width: 100%;
 		z-index: 0;
 	}
