@@ -92,13 +92,18 @@
 			center: [14.052833595128646, 58.41176811801333],
 			zoom: 3,
 			renderWorldCopies: false,
+			attributionControl: false,
 			maxBounds: [
 				[-179, -75],
 				[179, 75],
 			],
-
-			// projection: 'globe',
-		});
+			// });
+		}).addControl(
+			new maplibregl.AttributionControl({
+				customAttribution: 'This product includes GeoLite2 data created by MaxMind, available from<br><a href="https://www.maxmind.com">https://www.maxmind.com</a>.',
+				compact: false,
+			})
+		);
 
 		map.on('load', function () {
 			mapLoaded = true;
@@ -232,9 +237,12 @@
 		background-color: var(--black-bg);
 	}
 	#map {
+		overflow: hidden;
 		position: absolute;
 		top: 0;
 		bottom: 0;
+		left: 0;
+		right: 0;
 		width: 100%;
 		z-index: 0;
 	}
@@ -283,6 +291,7 @@
 		user-select: none;
 		padding: 20px;
 		border: 1px var(--primary) solid;
+		overflow: hidden;
 	}
 
 	.disableClick {
