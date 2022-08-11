@@ -1,5 +1,5 @@
-import './app.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import './app.css';
 import '@picocss/pico/css/pico.classless.min.css';
 import App from './App.svelte';
 

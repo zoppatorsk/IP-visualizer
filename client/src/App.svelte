@@ -17,16 +17,15 @@
 	let selectedLayer;
 	let availableLayers = ['Heatmap', 'Hexagon', 'Scatterplotter', 'Grid'];
 	let map;
-	let mapLoaded = false; //changes to true when map has loeded, this is to prevent stuff to break on select layer
+	let mapLoaded = false; //changes to true when map has loaded
 	let info;
 	let hideController = false;
 	let madeVisible = false;
-	$: selectedLayer && mapLoaded && changeLayer(); //will run when map is loaded and layer is selected
+	$: selectedLayer && mapLoaded && changeLayer(); //will run changeLayer function when map is loaded and layer is selected
 
 	document.addEventListener('info', (e) => {
 		// @ts-ignore
 		info = e.detail;
-		// console.log(info);
 	});
 
 	document.addEventListener('circleCreated', async (e) => {

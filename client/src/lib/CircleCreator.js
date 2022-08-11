@@ -43,9 +43,10 @@ export default class CircleCreator {
 	mouseDown(e) {
 		console.log('mouseDown');
 		if (!(this.acitve && e.button === 0)) return;
+		this.map.dragRotate.disable();
+		this.map.touchZoomRotate.disableRotation();
 		this.map.dragPan.disable();
 		this.centerPos = this.mousePos(e);
-
 		this.canvas.addEventListener('pointermove', this.MouseMoveListener);
 		this.canvas.addEventListener('pointerup', this.MouseUpListener);
 		document.addEventListener('keydown', this.KeyDownListener);
@@ -116,6 +117,9 @@ export default class CircleCreator {
 
 		this.acitve = false;
 		this.map.dragPan.enable();
+		this.map.dragRotate.enable();
+		this.map.touchZoomRotate.enableRotation();
+		// this.canvas.style.cursor = 'default';
 	}
 
 	renderCircle(circle) {

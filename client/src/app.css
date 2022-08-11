@@ -13,3 +13,11 @@ html {
 	background-color: #445766;
 	overflow: hidden;
 }
+
+/* mapbox has some really glitchy behavior when it comes to cursors, this at least prevent it from keep change it from grab to some grabbing cursor */
+.maplibregl-canvas-container.maplibregl-interactive:active,
+.maplibregl-ctrl-group button.maplibregl-ctrl-compass:active,
+.mapboxgl-canvas-container.mapboxgl-interactive:active,
+.mapboxgl-ctrl-group button.mapboxgl-ctrl-compass:active {
+	cursor: grab;
+}
