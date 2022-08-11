@@ -236,7 +236,6 @@
 		background-color: var(--black-bg);
 	}
 	#map {
-		overflow: hidden;
 		position: absolute;
 		top: 0;
 		bottom: 0;
