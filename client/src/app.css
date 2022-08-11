@@ -6,12 +6,12 @@
 *::after,
 *::before {
 	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
 }
 html {
 	background-color: #445766;
 	overflow: hidden;
+	padding: 0;
+	margin: 0;
 }
 
 /* mapbox has some really glitchy behavior when it comes to cursors, this at least prevent it from keep change it from grab to some grabbing cursor */
