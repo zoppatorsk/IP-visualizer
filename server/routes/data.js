@@ -3,6 +3,7 @@ const router = express.Router();
 const processData = require('../modules/processData');
 const validate = require('../services/validate');
 const rateLimiter = require('../middleware/rateLimiter');
+const redisClient = require('../services/redis');
 
 router.post('/', rateLimiter, async (req, res) => {
 	// Validate the input

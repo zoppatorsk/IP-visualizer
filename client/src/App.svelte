@@ -25,7 +25,7 @@
 	document.addEventListener('info', (e) => {
 		// @ts-ignore
 		info = e.detail;
-		console.log(info);
+		// console.log(info);
 	});
 
 	document.addEventListener('circleCreated', async (e) => {
@@ -187,13 +187,14 @@
 		left: 40px;
 		z-index: 1;
 		pointer-events: none;
-		background: var(--primary);
+		/* background: var(--primary);
 
 		background: -webkit-linear-gradient(to right, var(--primary), #00f260);
 		background: linear-gradient(to right, var(--primary), #00f260);
 
 		background-clip: text;
-		color: transparent;
+		color: transparent; */
+		color: var(--primary);
 		font-size: 4em;
 		opacity: 0.9;
 	}

@@ -1,4 +1,7 @@
-.env
+*.local
 *.log
 node_modules
 public
+*.csv
+scripts/files
+testdata
