@@ -55,10 +55,9 @@ export default function createLayer(selectedLayer, ipData) {
 				radiusScale: get(layerSettings)[selectedLayer].radiusScale,
 				lineWidthMinPixels: get(layerSettings)[selectedLayer].lineWidthMinPixels,
 				getPosition: (d) => d.coordinates,
-				// getFillColor: (d) => [1, 'rgba(0, 0, 255, 0.2)'],
 				getFillColor: (d) => colorByHosts(d.hosts),
 				pickable: true,
-				onHover: (info) => info.object && document.dispatchEvent(new CustomEvent('info', { detail: info.object })),
+				onClick: (info) => info.object && document.dispatchEvent(new CustomEvent('info', { detail: info.object })),
 			});
 			break;
 

@@ -6,6 +6,7 @@
 	import createLayer from './lib/createLayer.js';
 	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 	import ArrowRight from 'svelte-material-icons/ArrowRight.svelte';
+
 	import SelectionEllipse from 'svelte-material-icons/Crosshairs.svelte';
 	import fetchData from './lib/fetchData';
 
@@ -56,6 +57,7 @@
 		if (layer) {
 			map.addLayer(layer);
 		}
+		info = null;
 	}
 
 	function send() {
@@ -124,26 +126,26 @@
 
 			<div class="layerControl">
 				{#if selectedLayer === 'Heatmap'}
-					<label for="radiusPixels">radius pixels {$layerSettings[selectedLayer].radiusPixels}</label>
+					<label for="radiusPixels">Radius Pixels: {$layerSettings[selectedLayer].radiusPixels}</label>
 					<input type="range" name="radiusPixels" min="0" max="100" bind:value={$layerSettings[selectedLayer].radiusPixels} on:change={() => layer.setProps({ radiusPixels: $layerSettings[selectedLayer].radiusPixels })} />
-					<label for="intensity">Intensity {$layerSettings[selectedLayer].intensity}</label>
+					<label for="intensity">Intensity: {$layerSettings[selectedLayer].intensity}</label>
 					<input type="range" name="intensity" min="1" max="100" bind:value={$layerSettings[selectedLayer].intensity} on:change={() => layer.setProps({ intensity: $layerSettings[selectedLayer].intensity })} />
 				{:else if selectedLayer === 'Grid'}
-					<label for="cellSize">Cell Size {$layerSettings[selectedLayer].cellSize}</label>
+					<label for="cellSize">Cell Size: {$layerSettings[selectedLayer].cellSize}</label>
 					<input type="range" name="cellSize" min="0" max="5000" bind:value={$layerSettings[selectedLayer].cellSize} on:change={() => layer.setProps({ cellSize: $layerSettings[selectedLayer].cellSize })} />
-					<label for="elevationScale">Elevation Scale {$layerSettings[selectedLayer].elevationScale}</label>
+					<label for="elevationScale">Elevation Scale: {$layerSettings[selectedLayer].elevationScale}</label>
 					<input type="range" name="elevationScale" min="1" max="100" bind:value={$layerSettings[selectedLayer].elevationScale} on:change={() => layer.setProps({ elevationScale: $layerSettings[selectedLayer].elevationScale })} />
 				{:else if selectedLayer === 'Scatterplotter'}
-					<label for="radiusScale">Radius Scale {$layerSettings[selectedLayer].radiusScale}</label>
+					<label for="radiusScale">Radius Scale: {$layerSettings[selectedLayer].radiusScale}</label>
 					<input type="range" name="radiusScale" min="1" max="20" bind:value={$layerSettings[selectedLayer].radiusScale} on:change={() => layer.setProps({ radiusScale: $layerSettings[selectedLayer].radiusScale })} />
-					<label for="lineWidthMinPixels">Min Pixel Width {$layerSettings[selectedLayer].lineWidthMinPixels}</label>
+					<label for="lineWidthMinPixels">Min Pixel Width: {$layerSettings[selectedLayer].lineWidthMinPixels}</label>
 					<input type="range" name="lineWidthMinPixels" min="1" max="5" bind:value={$layerSettings[selectedLayer].lineWidthMinPixels} on:change={() => layer.setProps({ lineWidthMinPixels: $layerSettings[selectedLayer].lineWidthMinPixels })} />
 				{:else if selectedLayer === 'Hexagon'}
-					<label for="radius">Radius{$layerSettings[selectedLayer].radius}</label>
+					<label for="radius">Radius: {$layerSettings[selectedLayer].radius}</label>
 					<input type="range" name="radiusScale" min="100" max="10000" step="100" bind:value={$layerSettings[selectedLayer].radius} on:change={() => layer.setProps({ radius: $layerSettings[selectedLayer].radius })} />
-					<label for="coverage">Coverage {$layerSettings[selectedLayer].coverage}</label>
+					<label for="coverage">Coverage: {$layerSettings[selectedLayer].coverage}</label>
 					<input type="range" name="coverage" min="0.1" max="1" step="0.1" bind:value={$layerSettings[selectedLayer].coverage} on:change={() => layer.setProps({ coverage: $layerSettings[selectedLayer].coverage })} />
-					<label for="upperPrecentile">Upper Percentile {$layerSettings[selectedLayer].upperPercentile}</label>
+					<label for="upperPrecentile">Upper Percentile: {$layerSettings[selectedLayer].upperPercentile}</label>
 					<input type="range" name="upperPrecentile" min="90" max="100" step="1" bind:value={$layerSettings[selectedLayer].upperPercentile} on:change={() => layer.setProps({ upperPercentile: $layerSettings[selectedLayer].upperPercentile })} />
 				{/if}
 			</div>
@@ -157,7 +159,7 @@
 			</div>
 			{#if selectedLayer == 'Scatterplotter'}
 				<div>
-					Last Hovered<br />CIDR: <span class="bold">{info ? info.CIDR : 'none'}</span><br />
+					Clicked item:<br />CIDR: <span class="bold">{info ? info.CIDR : 'none'}</span><br />
 					IP's: <span class="bold">{info ? info.hosts : 'none'}</span>
 				</div>
 			{:else if selectedLayer == 'Grid' || selectedLayer == 'Hexagon'}
@@ -187,13 +189,6 @@
 		left: 40px;
 		z-index: 1;
 		pointer-events: none;
-		/* background: var(--primary);
-
-		background: -webkit-linear-gradient(to right, var(--primary), #00f260);
-		background: linear-gradient(to right, var(--primary), #00f260);
-
-		background-clip: text;
-		color: transparent; */
 		color: var(--primary);
 		font-size: 4em;
 		opacity: 0.9;
@@ -218,6 +213,32 @@
 	.made-visible {
 		left: 20px;
 	}
+
+	.button-wrapper {
+		position: absolute;
+		bottom: 30px;
+		left: 0;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		z-index: 999;
+	}
+	.button-wrapper div {
+		font-size: 40px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-color: var(--black-bg);
+	}
+	#map {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 100%;
+		z-index: 0;
+	}
+
 	.controller {
 		position: absolute;
 		top: 10px;
@@ -266,30 +287,6 @@
 
 	.disableClick {
 		pointer-events: none;
-	}
-	.button-wrapper {
-		position: absolute;
-		bottom: 30px;
-		left: 0;
-		width: 100%;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		z-index: 999;
-	}
-	.button-wrapper div {
-		font-size: 40px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		background-color: var(--black-bg);
-	}
-	#map {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		width: 100%;
-		z-index: 0;
 	}
 
 	@media only screen and (max-width: 450px) {
