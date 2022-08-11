@@ -10,7 +10,7 @@ const app = express();
 // const redisClient = require('./services/redis');
 
 app.set('query parser', false); //No query parser needed
-if (process.env.USE_PROXY == 'true' || process.env.MODE == 'prod') app.set('trust proxy', true); //if USE_PROXY is set, then trust proxy headers
+if (process.env.USE_PROXY == 'true') app.set('trust proxy', true); //if USE_PROXY is set, then trust proxy headers
 
 //Routes for the endpoints...
 const data = require('./routes/data');
@@ -18,7 +18,7 @@ const data = require('./routes/data');
 //Middleware that's always used -- gets in between the request and response (request -> middleware -> route handler -> response)
 app.use(helmet({ contentSecurityPolicy: false })); //Setting some security headers but disable the CSP junk..
 app.use(compression()); //use compression to compress responses
-if (process.env.NEED_CORS == 'true' && process.env.MODE !== 'prod') app.use(cors()); //add cors to allow cross-origin requests
+if (process.env.NEED_CORS == 'true') app.use(cors()); //add cors to allow cross-origin requests
 
 app.use(express.json()); //for parsing req.body into a json object
 
@@ -28,14 +28,7 @@ app.use(express.static(path.join(__dirname, 'public'))); //serve static files fr
 
 app.use(expressErrorHandler); //Error handler middleware. Always shld be last cuz errors boubble up.
 
-const port = process.env.MODE == 'prod' ? process.env.PROD_API_PORT : process.env.API_PORT;
-// redisClient
-// 	.connect()
-// 	.then(() => {
-// 		if (process.env.MODE == 'prod') app.listen(port, 'localhost', () => console.log(`localhost listening on port ${port}`));
-// 		else app.listen(port, () => console.log(`listening on port ${port}`));
-// 	})
-// 	.catch((err) => console.log(err)); //connect to redis and start the server
+const port = process.env.API_PORT;
+const listen = process.env.LISTEN;
 
-if (process.env.MODE == 'prod') app.listen(port, 'localhost', () => console.log(`localhost listening on port ${port}`));
-else app.listen(port, () => console.log(`listening on port ${port}`));
+app.listen(port, `${listen}`, () => console.log(`${listen} listening on port ${port}`));

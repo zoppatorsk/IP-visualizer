@@ -7,7 +7,7 @@ process
 		console.error(reason, 'Unhandled promise rejection ', p);
 		//cant figure out how to log the promise rejection properly so just logging the reason
 		logError(reason);
-		process.exit(1); //just kill on rejection.. shouldnt be a problem
+		process.exit(1); //just kill on promise rejections.. if something rejects stuff is broken anyway
 	})
 	.on('uncaughtException', (err) => {
 		console.error('Uncaught Exception', err);
@@ -24,4 +24,3 @@ function logError(content) {
 	}
 }
 module.exports = logError;
-//

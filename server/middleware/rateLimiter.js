@@ -2,7 +2,6 @@ const rateLimit = require('express-rate-limit');
 const RedisStore = require('rate-limit-redis');
 const redisClient = require('../services/redis');
 
-redisClient.connect();
 const rateLimiter = rateLimit({
 	windowMs: 60 * 1000, // 1minutes
 	max: 6, // Limit each IP to 6 requests per `window` (here, per 1 minutes)
