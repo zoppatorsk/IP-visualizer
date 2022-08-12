@@ -63,7 +63,6 @@ export default function createCircle(map) {
 
 			//element used when drawing the circle on screen
 			if (!circleElement) {
-				console.log('creating circle element');
 				circleElement = document.createElement('div');
 				circleElement.style.cssText = 'background: rgba(56, 135, 190, 0.1);border: 2px solid var(--primary);position: absolute;top: 0;left: 0;z-index: 9;border-radius: 50%; display:flex;align-items:center;justify-content:center;color:white;font-size:13px;text-align:center;';
 				canvas.appendChild(circleElement);
@@ -72,7 +71,7 @@ export default function createCircle(map) {
 			let endPoint = turfPoint([map.unproject(endPos).lng, map.unproject(endPos).lat]);
 			const currentRadius = distance(center, endPoint);
 
-			//do some math n position the element in the corrrect place if radius is below threshold
+			//do some math n position the element in the corrrect place.
 			circleElement.innerText = radius.toFixed().toString() + ' km';
 			if (currentRadius > maxRadius) radius = maxRadius;
 			if (currentRadius <= maxRadius) {
@@ -90,6 +89,7 @@ export default function createCircle(map) {
 			}
 		}
 		function onMouseUp(e) {
+			e.preventDefault();
 			if (e.button == 0) {
 				e.preventDefault();
 				finish();

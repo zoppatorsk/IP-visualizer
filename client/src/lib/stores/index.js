@@ -21,5 +21,5 @@ const setttings = {
 	},
 };
 
-export const waitingForData = writable(false);
 export const layerSettings = writable(setttings);
+export const waitingForData = writable(false);

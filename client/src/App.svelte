@@ -14,7 +14,6 @@
 	let circleDragActive = false;
 
 	onMount(() => {
-		//mapboxgl.accessToken = import.meta.env.VITE_MAPBOXKEY;
 		map = new maplibregl.Map({
 			container: 'map',
 			style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json', // style URL
@@ -46,10 +45,8 @@
 		circleDragActive = false;
 		if (!circleData) return;
 		$waitingForData = true;
-		console.log('posting');
 		ipData = await fetchData(circleData);
 		$waitingForData = false;
-		console.log('done');
 	}
 </script>
 

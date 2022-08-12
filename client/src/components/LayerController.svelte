@@ -18,6 +18,7 @@
 	let layerInfo;
 	$: selectedLayer && mapIsLoaded && changeLayer(); //will run changeLayer function when map is loaded and layer is selected
 	$: ipData && layer && updateLayerData(); //will run when data changes
+	$: $layerSettings[selectedLayer] && layer && layer.setProps($layerSettings[selectedLayer]); //will run when layer settings change and update the layer props
 
 	function setLayerInfo(info) {
 		layerInfo = info;
@@ -142,26 +143,26 @@
 		<div class="layerControl">
 			{#if selectedLayer === 'Heatmap'}
 				<label for="radiusPixels">Radius Pixels: {$layerSettings[selectedLayer].radiusPixels}</label>
-				<input type="range" name="radiusPixels" min="0" max="100" bind:value={$layerSettings[selectedLayer].radiusPixels} on:change={() => layer.setProps({ radiusPixels: $layerSettings[selectedLayer].radiusPixels })} />
+				<input type="range" name="radiusPixels" min="0" max="100" bind:value={$layerSettings[selectedLayer].radiusPixels} />
 				<label for="intensity">Intensity: {$layerSettings[selectedLayer].intensity}</label>
-				<input type="range" name="intensity" min="1" max="100" bind:value={$layerSettings[selectedLayer].intensity} on:change={() => layer.setProps({ intensity: $layerSettings[selectedLayer].intensity })} />
+				<input type="range" name="intensity" min="1" max="100" bind:value={$layerSettings[selectedLayer].intensity} />
 			{:else if selectedLayer === 'Grid'}
 				<label for="cellSize">Cell Size: {$layerSettings[selectedLayer].cellSize}</label>
-				<input type="range" name="cellSize" min="0" max="5000" bind:value={$layerSettings[selectedLayer].cellSize} on:change={() => layer.setProps({ cellSize: $layerSettings[selectedLayer].cellSize })} />
+				<input type="range" name="cellSize" min="0" max="5000" bind:value={$layerSettings[selectedLayer].cellSize} />
 				<label for="elevationScale">Elevation Scale: {$layerSettings[selectedLayer].elevationScale}</label>
-				<input type="range" name="elevationScale" min="1" max="100" bind:value={$layerSettings[selectedLayer].elevationScale} on:change={() => layer.setProps({ elevationScale: $layerSettings[selectedLayer].elevationScale })} />
+				<input type="range" name="elevationScale" min="1" max="100" bind:value={$layerSettings[selectedLayer].elevationScale} />
 			{:else if selectedLayer === 'Scatterplotter'}
 				<label for="radiusScale">Radius Scale: {$layerSettings[selectedLayer].radiusScale}</label>
-				<input type="range" name="radiusScale" min="1" max="20" bind:value={$layerSettings[selectedLayer].radiusScale} on:change={() => layer.setProps({ radiusScale: $layerSettings[selectedLayer].radiusScale })} />
+				<input type="range" name="radiusScale" min="1" max="20" bind:value={$layerSettings[selectedLayer].radiusScale} />
 				<label for="lineWidthMinPixels">Min Pixel Width: {$layerSettings[selectedLayer].lineWidthMinPixels}</label>
-				<input type="range" name="lineWidthMinPixels" min="1" max="5" bind:value={$layerSettings[selectedLayer].lineWidthMinPixels} on:change={() => layer.setProps({ lineWidthMinPixels: $layerSettings[selectedLayer].lineWidthMinPixels })} />
+				<input type="range" name="lineWidthMinPixels" min="1" max="5" bind:value={$layerSettings[selectedLayer].lineWidthMinPixels} />
 			{:else if selectedLayer === 'Hexagon'}
 				<label for="radius">Radius: {$layerSettings[selectedLayer].radius}</label>
-				<input type="range" name="radiusScale" min="100" max="10000" step="100" bind:value={$layerSettings[selectedLayer].radius} on:change={() => layer.setProps({ radius: $layerSettings[selectedLayer].radius })} />
+				<input type="range" name="radiusScale" min="100" max="10000" step="100" bind:value={$layerSettings[selectedLayer].radius} />
 				<label for="coverage">Coverage: {$layerSettings[selectedLayer].coverage}</label>
-				<input type="range" name="coverage" min="0.1" max="1" step="0.1" bind:value={$layerSettings[selectedLayer].coverage} on:change={() => layer.setProps({ coverage: $layerSettings[selectedLayer].coverage })} />
+				<input type="range" name="coverage" min="0.1" max="1" step="0.1" bind:value={$layerSettings[selectedLayer].coverage} />
 				<label for="upperPrecentile">Upper Percentile: {$layerSettings[selectedLayer].upperPercentile}</label>
-				<input type="range" name="upperPrecentile" min="90" max="100" step="1" bind:value={$layerSettings[selectedLayer].upperPercentile} on:change={() => layer.setProps({ upperPercentile: $layerSettings[selectedLayer].upperPercentile })} />
+				<input type="range" name="upperPrecentile" min="90" max="100" step="1" bind:value={$layerSettings[selectedLayer].upperPercentile} />
 			{/if}
 		</div>
 		<div class="ip-selection">
