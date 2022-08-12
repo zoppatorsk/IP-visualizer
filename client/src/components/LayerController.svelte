@@ -95,10 +95,10 @@
 					stroked: true,
 					filled: true,
 					radiusMinPixels: 1,
-					radiusMaxPixels: 50,
+					radiusMaxPixels: 10,
 					getRadius: (d) => d.hosts / 10,
 					getPosition: (d) => d.coordinates,
-					// getFillColor: (d) => colorByHosts(d.hosts),
+					getFillColor: (d) => colorByHosts(d.hosts),
 					pickable: true,
 					onClick: (info) => info.object && setLayerInfo(info.object),
 				};
@@ -124,6 +124,14 @@
 					layerOptions[key] = value;
 				});
 				break;
+		}
+		function colorByHosts(hosts) {
+			if (hosts >= 50000) return [132, 94, 194];
+			if (hosts >= 10000) return [214, 93, 177];
+			if (hosts >= 5000) return [255, 150, 113];
+			if (hosts > 1024) return [255, 150, 113];
+			if (hosts >= 512) return [255, 199, 95];
+			if (hosts > 0) return [249, 248, 113];
 		}
 		layer = new MapboxLayer(layerOptions);
 		return layer;

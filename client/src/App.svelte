@@ -38,7 +38,7 @@
 		});
 	});
 
-	async function test() {
+	async function visualizeIp() {
 		if (circleDragActive == true) return; //prevent function from running when already pressed button
 		circleDragActive = true;
 		let circleData = await createCircle(map);
@@ -55,7 +55,7 @@
 	{#if map}
 		<div class="button-wrapper">
 			<!-- {circleDragActive}disabled={circleDragActive} -->
-			<div role="button" class="outline" class:disabled={$waitingForData || circleDragActive} on:click={test} aria-busy={$waitingForData}>
+			<div role="button" class="outline" class:disabled={!mapIsLoaded || $waitingForData || circleDragActive} on:click={visualizeIp} aria-busy={$waitingForData}>
 				{#if !$waitingForData}<SelectionEllipse /> {/if}
 			</div>
 		</div>
