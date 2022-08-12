@@ -1,22 +1,17 @@
 <script>
 	import maplibregl from 'maplibre-gl';
 	import { onMount } from 'svelte';
-	import createCircle from './lib/createCircle';
-
 	import SelectionEllipse from 'svelte-material-icons/Crosshairs.svelte';
+	import createCircle from './lib/createCircle';
 	import fetchData from './lib/fetchData';
+	import { waitingForData } from './lib/stores/';
+	import LayerController from './components/LayerController.svelte';
 
 	let map;
-	let waitingForData = false; //changes to true when waiting for data to load
+	let mapIsLoaded = false;
+	let ipData = [];
 	let madeVisible = false;
-	let circleDragActivaed = false;
-
-	async function test() {
-		let r = await createCircle(map);
-		console.log(r);
-	}
-
-	function send() {}
+	let circleDragActive = false;
 
 	onMount(() => {
 		//mapboxgl.accessToken = import.meta.env.VITE_MAPBOXKEY;
@@ -39,18 +34,37 @@
 			})
 		);
 
-		map.on('load', function () {});
+		map.on('load', function () {
+			mapIsLoaded = true;
+		});
 	});
+
+	async function test() {
+		if (circleDragActive == true) return; //prevent function from running when already pressed button
+		circleDragActive = true;
+		let circleData = await createCircle(map);
+		circleDragActive = false;
+		if (!circleData) return;
+		$waitingForData = true;
+		console.log('posting');
+		ipData = await fetchData(circleData);
+		$waitingForData = false;
+		console.log('done');
+	}
 </script>
 
 <main>
 	<h1>IP Visualizer</h1>
-	<div class="button-wrapper">
-		<div role="button" class="outline" on:click={test} aria-busy={waitingForData}>
-			{#if !waitingForData}<SelectionEllipse color={circleDragActivaed ? 'blue' : ''} /> {/if}
+	{#if map}
+		<div class="button-wrapper">
+			<!-- {circleDragActive}disabled={circleDragActive} -->
+			<div role="button" class="outline" class:disabled={$waitingForData || circleDragActive} on:click={test} aria-busy={$waitingForData}>
+				{#if !$waitingForData}<SelectionEllipse /> {/if}
+			</div>
 		</div>
-	</div>
 
+		<LayerController {map} {ipData} {mapIsLoaded} />
+	{/if}
 	<div id="map" />
 	<div class="made" class:made-visible={madeVisible} on:click={() => (madeVisible = !madeVisible)}>
 		&lt; Made with ☕ and <img src="./svelte.svg" alt="svelte logo" /> &gt;
@@ -64,6 +78,7 @@
 		left: 40px;
 		z-index: 1;
 		pointer-events: none;
+		user-select: none;
 		color: var(--primary);
 		font-size: 4em;
 		opacity: 0.9;
@@ -91,20 +106,26 @@
 
 	.button-wrapper {
 		position: absolute;
-		bottom: 30px;
+		bottom: 50px;
 		left: 0;
 		width: 100%;
-		display: flex;
-		justify-content: center;
-		align-items: center;
 		z-index: 999;
 	}
+
 	.button-wrapper div {
+		margin: 0 auto;
+		width: 120px;
+		height: 80px;
 		font-size: 40px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		background-color: var(--black-bg);
+	}
+	.disabled {
+		opacity: 0.5;
+		pointer-events: none;
+		cursor: unset;
 	}
 	#map {
 		position: absolute;

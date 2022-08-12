@@ -12,7 +12,7 @@ export default async function fetchData(postData) {
 		if (!result.ok) {
 			const err = new Error(`Error! status: ${result.status}`); //throw it n handle in catch block
 			// @ts-ignore -- shut upp ts, i dont want to build custom errors just for this junk
-			err.code = result.status;
+			err.code = result.status; //add status code to error
 			throw err;
 		}
 
@@ -23,16 +23,16 @@ export default async function fetchData(postData) {
 			switch (error.code) {
 				case 413: //just use a fallthrough if JSON Parser fails.
 				case 400:
-					message = 'Bad request, what are u mocking around with?';
+					message = 'Bad request! What are u mocking around with?';
 					break;
 				case 429:
 					message = 'Rate limited! Stop spamming bro!';
 					break;
 				case 500:
-					console.log('Internal server error. Congratz u broke something, plz report bugs!');
+					message = 'Internal server error. Congratz u broke something, plz report bugs!';
 					break;
 				default:
-					console.log('??Unknown error??');
+					message = '??Unknown error??';
 					break;
 			}
 		}

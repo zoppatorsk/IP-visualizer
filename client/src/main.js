@@ -1,6 +1,6 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
-import './app.css';
 import '@picocss/pico/css/pico.classless.min.css';
+import './app.css';
 import App from './App.svelte';
 
 const app = new App({

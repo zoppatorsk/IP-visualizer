@@ -4,8 +4,6 @@ const setttings = {
 	Heatmap: {
 		radiusPixels: 20,
 		intensity: 1,
-		colorDomain: null,
-		colorRange: [],
 	},
 	Grid: {
 		cellSize: 1200,
@@ -23,4 +21,5 @@ const setttings = {
 	},
 };
 
+export const waitingForData = writable(false);
 export const layerSettings = writable(setttings);
