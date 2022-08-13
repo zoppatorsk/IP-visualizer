@@ -17,6 +17,7 @@ function writeFile(inputFile) {
 		.on('end', async function () {
 			outputStream.end();
 			console.log('Parse complete');
+			console.log(`Output file: ${outPutFile}`);
 			process.exit();
 		});
 }

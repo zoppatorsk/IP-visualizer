@@ -1,7 +1,8 @@
 //rewrote scripts using ESM modules instead of CommonJS as fixed version of download package is not currently available as ESM module.
 
 import * as dotenv from 'dotenv';
-dotenv.config({ path: '../.env.local' });
+dotenv.config({ path: '../.env.local' }); //just for testing
+//dotenv.config({ path: '../.env' });
 import { pathExists, ensureDir, move, remove } from 'fs-extra';
 import { readdirSync } from 'fs';
 import download from 'download';

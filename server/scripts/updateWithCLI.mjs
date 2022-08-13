@@ -1,16 +1,11 @@
 import { spawn } from 'child_process';
 import { createReadStream } from 'fs';
 import CsvReadableStream from 'csv-reader';
-try {
-	const redisPipe = spawn(`redis-cli -h ${process.env.REDIS_CONNECT_STRING}`, ['--pipe']);
 
-	redisPipe.stdout.setEncoding('utf8');
-	redisPipe.stdout.pipe(process.stdout);
-	redisPipe.stderr.pipe(process.stderr);
-} catch (error) {
-	console.log('catched error');
-	process.exit(1);
-}
+const redisPipe = spawn(`redis-cli -h ${process.env.REDIS_CONNECT_STRING}`, ['--pipe']);
+redisPipe.stdout.setEncoding('utf8');
+redisPipe.stdout.pipe(process.stdout);
+redisPipe.stderr.pipe(process.stderr);
 
 const BUFFER_SIZE = 524288; // 512KB
 let buffer = '';
