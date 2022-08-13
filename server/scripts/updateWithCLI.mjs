@@ -1,18 +1,22 @@
-const spawn = require('child_process').spawn;
-const fs = require('fs');
-const CsvReadableStream = require('csv-reader');
-const redisPipe = spawn(`redis-cli -h ${process.env.REDIS_CONNECT_STRING}`, ['--pipe']);
+import { spawn } from 'child_process';
+import { createReadStream } from 'fs';
+import CsvReadableStream from 'csv-reader';
+try {
+	const redisPipe = spawn(`redis-cli -h ${process.env.REDIS_CONNECT_STRING}`, ['--pipe']);
 
-redisPipe.stdout.setEncoding('utf8');
-redisPipe.stdout.pipe(process.stdout);
-redisPipe.stderr.pipe(process.stderr);
+	redisPipe.stdout.setEncoding('utf8');
+	redisPipe.stdout.pipe(process.stdout);
+	redisPipe.stderr.pipe(process.stderr);
+} catch (error) {
+	console.log('catched error');
+	process.exit(1);
+}
 
-//const file = './files/./files/GeoLite2-City-Blocks-IPv4.csv';
 const BUFFER_SIZE = 524288; // 512KB
 let buffer = '';
 
 async function updateWithCLI(file) {
-	let inputStream = fs.createReadStream(file, 'utf8');
+	let inputStream = createReadStream(file, 'utf8');
 	console.log('Let the piping commence! Pleas wait...');
 
 	inputStream
@@ -44,5 +48,4 @@ function encodeRedis(dataString) {
 	}
 	return msg; //return the encoded message
 }
-module.exports = updateWithCLI;
-// run();
+export default updateWithCLI;

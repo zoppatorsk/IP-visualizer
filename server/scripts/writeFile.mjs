@@ -1,12 +1,12 @@
-const fs = require('fs');
-const CsvReadableStream = require('csv-reader');
+import { createReadStream, createWriteStream } from 'fs';
+import CsvReadableStream from 'csv-reader';
 const outPutFile = './files/parsed.txt';
 
 function writeFile(inputFile) {
 	console.log('Parsing csv file');
 
-	let inputStream = fs.createReadStream(`${inputFile}`, 'utf8');
-	let outputStream = fs.createWriteStream(`${outPutFile}`);
+	let inputStream = createReadStream(`${inputFile}`, 'utf8');
+	let outputStream = createWriteStream(`${outPutFile}`);
 	inputStream
 		.pipe(new CsvReadableStream({ asObject: true }))
 		.on('data', async function (row) {
@@ -20,4 +20,4 @@ function writeFile(inputFile) {
 			process.exit();
 		});
 }
-module.exports = writeFile;
+export default writeFile;
