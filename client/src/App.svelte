@@ -4,8 +4,9 @@
 	import SelectionEllipse from 'svelte-material-icons/Crosshairs.svelte';
 	import createCircle from './lib/createCircle';
 	import fetchData from './lib/fetchData';
-	import { waitingForData } from './lib/stores/';
+	import { waitingForData, modal } from './lib/stores/';
 	import LayerController from './components/LayerController.svelte';
+	import Modal from './components/Modal.svelte';
 
 	let map;
 	let mapIsLoaded = false;
@@ -56,10 +57,12 @@
 </script>
 
 <main>
+	{#if $modal.open == true}
+		<Modal on:close={() => ($modal.open = false)} />
+	{/if}
 	<h1>IP Visualizer</h1>
 	{#if map}
 		<div class="button-wrapper">
-			<!-- {circleDragActive}disabled={circleDragActive} -->
 			<div role="button" class="outline" class:disabled={!mapIsLoaded || $waitingForData || circleDragActive} on:click={visualizeIp} aria-busy={$waitingForData}>
 				{#if !$waitingForData}<SelectionEllipse /> {/if}
 			</div>
@@ -111,7 +114,7 @@
 		bottom: 50px;
 		left: 0;
 		width: 100%;
-		z-index: 999;
+		z-index: 99;
 	}
 
 	.button-wrapper div {

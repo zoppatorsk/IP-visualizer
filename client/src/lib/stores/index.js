@@ -20,6 +20,6 @@ const setttings = {
 		upperPercentile: 100,
 	},
 };
-
+export const modal = writable({ open: false, title: '', message: '' });
 export const layerSettings = writable(setttings);
 export const waitingForData = writable(false);

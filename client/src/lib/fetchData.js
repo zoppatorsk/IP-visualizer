@@ -1,3 +1,4 @@
+import { modal } from './stores/';
 export default async function fetchData(postData) {
 	//fetch data from server.. why do i even use fetch?? soo much extra junk needed...
 	try {
@@ -37,7 +38,8 @@ export default async function fetchData(postData) {
 			}
 		}
 		if (error == 'TypeError: NetworkError when attempting to fetch resource.') message = 'No connection to server, either server is down or CORS is needed ';
-		alert(message);
+		if (!message) message = 'Unknown error'; //if no error message is set default to this
+		modal.set({ open: true, title: 'Error', message });
 		return [];
 	}
 }
