@@ -48,6 +48,8 @@ async function run() {
 	} else if (answer === 'p') {
 		const { default: writeFile } = await import('./writeFile.mjs');
 		writeFile(dataFile);
+	} else if (answer === 'q') {
+		process.exit(0);
 	}
 }
 run();

@@ -42,10 +42,15 @@
 		if (circleDragActive == true) return; //prevent function from running when already pressed button
 		circleDragActive = true;
 		let circleData = await createCircle(map);
-		circleDragActive = false;
-		if (!circleData) return;
+
+		if (!circleData) {
+			circleDragActive = false;
+			return;
+		}
+
 		$waitingForData = true;
 		ipData = await fetchData(circleData);
+		circleDragActive = false;
 		$waitingForData = false;
 	}
 </script>
