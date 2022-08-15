@@ -2,7 +2,7 @@
 
 IP visualizer is a tool for visualizing IP addresses on a map inside a selected area determined by a radius drawn by the user.
 
-Live demo availble at [https://ipv.karate.monster](https://ipv.karate.monster)
+Live demo available at [https://ipv.karate.monster](https://ipv.karate.monster)
 
 Simply click on the crosshair button to activate select mode. Click anywhere on the map and drag to select a radius.
 
@@ -25,7 +25,7 @@ Here's a short video that explains the project and how it uses Redis:
 The user activates the select mode by clicking the crosshair button.\
 When this mode is selected the mouse position will be captured when the user left click with the mouse.\
 When user moves the mouse while the button is pressed a circle will be drawn. The circle radius will be calculated with the help of the [Turf.js](https://turfjs.org/) library.\
-Once the user release the mousbutton the circle will be drawn on the map as a polygon with the help of Turf.js.\
+Once the user releases the mouse button the circle will be drawn on the map as a polygon with the help of Turf.js.\
 At the same time a post request is sent to the server with the starting coordinates and the radius.\
 This data is then used sent to Redis with a request to get all the IP-addresses within the specified radius of the starting coordinates.\
 The IP-address data is then sent back to the client and with help of [deck.gl](https://deck.gl/) it is visualized on the map.
@@ -39,7 +39,7 @@ Here is an exmaple of the command: GEOADD ips -115.171971 36.120609 182.134.22.2
 
 The application itself do not change the data (with the exeception of the ratelimiter I'm using), it only fetches it, so it needs to be loaded into Redis before being used.
 This can be done automatically by using the "update-data" script.
-It will download the necessary .csv file and give options on how to load it into Redis, either the fast approch by using redis-cli if availble or the slower way by using the redis-client.
+It will download the necessary .csv file and give options on how to load it into Redis, either the fast approach by using redis-cli if available or the slower way by using the redis-client.
 
 This shows the function when loading data with the redis-cli. The encodeRedis function implements the needed protocol.
 
@@ -142,8 +142,8 @@ Refer to [this example](https://github.com/redis-developer/basic-analytics-dashb
 ### How the data is accessed:
 
 Accessing the data is done on the server and really simple.
-It uses the node redis client and just send the GEORADIUS command with the name of the set, cordinates for the center point of the circle and the radius in kilometers.
-The withcord parameter is set to true, so the results are returned with the cordinates.
+It uses the node redis client and just send the GEORADIUS command with the name of the set, coordinates for the center point of the circle and the radius in kilometers.
+The withcord parameter is set to true, so the results are returned with the coordinates .
 
 The paramters for coordinates and radius is ofcourse sent from the client side of the application.
 
@@ -264,7 +264,7 @@ npm run build --production
 
 This will use the .env.production file and set the api path to the correct url.
 
-If you want to serve client independetly from a regular webserver you can run
+If you want to serve client independently from a regular webserver you can run
 
 ```bash
 npm run build
@@ -288,4 +288,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 This repository does not include any data, it just provides a simple way to download the GeoLite2 database from MaxMind.\
 For usage rules and restrictions on mentioned data please cunsult the [license agreement](https://www.maxmind.com/en/geolite2/eula)
 
-Dependencies are licensed under the their own respective license and are their code is not included in this repository, it only holds a list of dependencies in form of a package.json file
+Dependencies are licensed under their own respective license and are their code is not included in this repository, it only holds a list of dependencies in form of a package.json file
