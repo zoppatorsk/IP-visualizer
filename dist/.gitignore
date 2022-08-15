@@ -1,0 +1,7 @@
+*.local
+*.log
+node_modules
+*.csv
+scripts/files
+testdata
+files
