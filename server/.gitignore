@@ -1,7 +1,7 @@
 *.local
 *.log
 node_modules
-public
+public/*.*
 *.csv
 scripts/files
 testdata
