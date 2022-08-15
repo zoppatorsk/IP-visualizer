@@ -6,7 +6,9 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"dev": "node -r dotenv/config . dotenv_config_path=./.env.local",
-		"start": "node index.js"
+		"start": "node index.js",
+		"update-data": "node -r dotenv/config ./scripts/index.mjs",
+		"update-data-local": "node -r dotenv/config ./scripts/index.mjs dotenv_config_path=./.env.local"
 	},
 	"keywords": [],
 	"author": "",

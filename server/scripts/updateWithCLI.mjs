@@ -2,7 +2,9 @@ import { spawn } from 'child_process';
 import { createReadStream } from 'fs';
 import CsvReadableStream from 'csv-reader';
 
-const redisPipe = spawn(`redis-cli -h ${process.env.REDIS_CONNECT_STRING}`, ['--pipe']);
+const uri = process.env.REDIS_CONNECT_STRING;
+const redisPipe = spawn(`redis-cli`, ['-u', `${uri}`, '--pipe']);
+
 redisPipe.stdout.setEncoding('utf8');
 redisPipe.stdout.pipe(process.stdout);
 redisPipe.stderr.pipe(process.stderr);

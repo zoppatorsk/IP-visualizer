@@ -14,7 +14,7 @@ export default async function fetchData(postData) {
 			const err = new Error(`Error! status: ${result.status}`); //throw it n handle in catch block
 			// @ts-ignore -- shut upp ts, i dont want to build custom errors just for this junk
 			err.code = result.status; //add status code to error
-			throw err;
+			throw err; //let catch handle it
 		}
 
 		return await result.json();

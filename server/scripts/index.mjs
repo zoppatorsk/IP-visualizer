@@ -1,8 +1,10 @@
 //rewrote scripts using ESM modules instead of CommonJS as fixed version of download package is not currently available as ESM module.
 
+//---this is only used when running file directly without using script from package.json.
 import * as dotenv from 'dotenv';
-dotenv.config({ path: '../.env.local' }); //just for testing
-//dotenv.config({ path: '../.env' });
+dotenv.config({ path: '../.env' });
+//-----
+
 import { pathExists, ensureDir, move, remove } from 'fs-extra';
 import { readdirSync } from 'fs';
 import download from 'download';
@@ -36,11 +38,11 @@ async function run() {
 		//remove the temp directory with the rest of the files that we dont need
 		await remove(`${destPath}/`);
 
-		console.log('download done');
+		console.log('download done, file is in files folder');
 	} else console.log('File already exist, will not download it');
 
 	//choose what to do
-	readlineSync.setDefaultOptions({ limit: ['r', 'p'] });
+	readlineSync.setDefaultOptions({ limit: ['r', 'p', 'q'] });
 	const answer = readlineSync.question('Bulkload with redis-cli. Parse to text file. Quit. r/p/q: ');
 	if (answer === 'r') {
 		const { default: updateWithCLI } = await import('./updateWithCLI.mjs');
