@@ -5,6 +5,11 @@ import CsvReadableStream from 'csv-reader';
 const uri = process.env.REDIS_CONNECT_STRING;
 const redisPipe = spawn(`redis-cli`, ['-u', `${uri}`, '--pipe']);
 
+redisPipe.on('error', function (err) {
+	console.log('Failed spawning redis-cli, check your REDIS_CONNECT_STRING in .env or try slow loading instead');
+	process.exit();
+});
+
 redisPipe.stdout.setEncoding('utf8');
 redisPipe.stdout.pipe(process.stdout);
 redisPipe.stderr.pipe(process.stderr);
@@ -14,13 +19,13 @@ let buffer = '';
 
 async function updateWithCLI(file) {
 	let inputStream = createReadStream(file, 'utf8');
-	console.log('Let the piping commence! Pleas wait...');
+	console.log('Pleas wait...');
 
 	inputStream
 		.pipe(new CsvReadableStream({ asObject: true }))
 		.on('data', async function (row) {
 			if (row.longitude && row.latitude) {
-				buffer += encodeRedis(`geoadd ips ${row.longitude} ${row.latitude} "${row.network}"`);
+				buffer += encodeRedis(`geoadd ips ${row.longitude} ${row.latitude} ${row.network}`);
 				//when buffer is filled then write it n empty buffer.
 				if (buffer.length > BUFFER_SIZE) {
 					redisPipe.stdin.write(buffer);
