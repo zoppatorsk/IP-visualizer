@@ -42,8 +42,8 @@ async function run() {
 	} else console.log('File already exist, will not download it');
 
 	//choose what to do
-	readlineSync.setDefaultOptions({ limit: ['r', 'p', 'q'] });
-	const answer = readlineSync.question('Bulkload with redis-cli. Parse to text file. Quit. r/p/q: ');
+	readlineSync.setDefaultOptions({ limit: ['r', 'p', 'q', 's'] });
+	const answer = readlineSync.question('\r\nSelect operation\r\n Bulk load with redis-cli. (r)\r\n Slow load wit redis-client (s)\r\n Parse commands to text file (p)\r\n Quit (q)\r\n: ');
 	if (answer === 'r') {
 		const { default: updateWithCLI } = await import('./updateWithCLI.mjs');
 		updateWithCLI(dataFile);
@@ -52,6 +52,9 @@ async function run() {
 		writeFile(dataFile);
 	} else if (answer === 'q') {
 		process.exit(0);
+	} else if (answer === 's') {
+		const { default: slowLoad } = await import('./slowLoad.mjs');
+		slowLoad(dataFile);
 	}
 }
 run();
