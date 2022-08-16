@@ -25,15 +25,12 @@
 	}
 
 	function updateLayerData() {
-		console.log('updating layer data');
 		layer.setProps({
 			data: ipData,
 		});
 	}
 
 	function changeLayer() {
-		console.log('change layer');
-		console.log('selectedLayer', selectedLayer);
 		if (!mapIsLoaded) return; //prevent function from running when map is not loaded
 
 		//Remove existing layer if exists
@@ -43,8 +40,6 @@
 		layer = createLayer(selectedLayer);
 		if (layer) map.addLayer(layer);
 		layerInfo = null;
-
-		// info = null;
 	}
 
 	function createLayer(selectedLayer) {
