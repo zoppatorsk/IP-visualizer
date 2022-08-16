@@ -1,6 +1,6 @@
 //rewrote scripts using ESM modules instead of CommonJS as fixed version of download package is not currently available as ESM module.
 
-//---this is only used when running file directly without using script from package.json.
+//---this is only used when running file directly without using script from package.json. Don't do that, cuz files will end up in differnet directory
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '../.env' });
 //-----
