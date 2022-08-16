@@ -7,7 +7,6 @@ const helmet = require('helmet');
 const cors = require('cors');
 const expressErrorHandler = require('./middleware/expressErrorHandler'); //middleware that cathes express errors
 const app = express();
-// const redisClient = require('./services/redis');
 
 app.set('query parser', false); //No query parser needed
 if (process.env.USE_PROXY == 'true') app.set('trust proxy', true); //if USE_PROXY is set, then trust proxy headers
