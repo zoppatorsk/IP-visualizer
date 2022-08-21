@@ -1,0 +1,22 @@
+{
+	"app_name": "IP visualizer",
+	"description": "IP visualizer is a tool for visualizing IP addresses on a map inside a selected area determined by a radius drawn by the user.",
+	"hidden": "false",
+	"rank": "99",
+	"type": "Full App",
+	"contributed_by": "Community",
+	"repo_url": "https://github.com/zoppatorsk/IP-visualizer",
+	"download_url": "https://github.com/zoppatorsk/IP-visualizer/archive/refs/heads/master.zip",
+	"hosted_url": "https://ipv.karate.monster/",
+	"quick_deploy": "false",
+	"deploy_buttons": [],
+	"language": ["JavaScript"],
+	"redis_commands": ["GEOADD", "GEORADIUS"],
+	"redis_features": [],
+	"redis_modules": [""],
+	"app_image_urls": ["https://camo.githubusercontent.com/4921c707a537443cf0243c50225d911ccd032044d3a9a4f118e45ebedcf56ae1/68747470733a2f2f692e706f7374696d672e63632f30516373784c53702f6970762e706e67"],
+	"youtube_url": "https://www.youtube.com/watch?v=20ycyDF81xg",
+	"special_tags": ["Hackathon"],
+	"verticals": ["Technology"],
+	"markdown": "https://raw.githubusercontent.com/zoppatorsk/IP-visualizer/master/README.md"
+}
